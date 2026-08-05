@@ -1,0 +1,69 @@
+name: Update ISD Dependencies Fishing VietNam
+
+on:
+  push:
+    branches:
+      - vfo
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Deploy isd_dependencies to Server
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.VFO_HOST }}
+        username: ${{ secrets.VFO_USERNAME }}
+        key: ${{ secrets.VFO_SSH_KEY }}
+        script_stop: true
+        script: |
+          # Clone if not exists, otherwise update
+          if [ ! -d ~/addons-system/isd_dependencies ]; then
+            git clone git@github.com:IntelliSync-data/isd_dependencies.git ~/addons-system/isd_dependencies
+            cd ~/addons-system/isd_dependencies && git checkout vfo
+          else
+            cd ~/addons-system/isd_dependencies
+            git fetch origin && git reset --hard origin/vfo
+          fi
+
+    - name: Install Python Dependencies
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.VFO_HOST }}
+        username: ${{ secrets.VFO_USERNAME }}
+        key: ${{ secrets.VFO_SSH_KEY }}
+        script_stop: true
+        script: |
+          /opt/odoo-venv/bin/pip install -r ~/addons-system/isd_dependencies/requirements.txt
+
+    - name: Restart Odoo Service
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.VFO_HOST }}
+        username: ${{ secrets.VFO_USERNAME }}
+        key: ${{ secrets.VFO_SSH_KEY }}
+        script: |
+          sudo systemctl restart odoo
+
+    - name: Verify Odoo Service
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.VFO_HOST }}
+        username: ${{ secrets.VFO_USERNAME }}
+        key: ${{ secrets.VFO_SSH_KEY }}
+        script: |
+          sleep 5
+          if sudo systemctl is-active --quiet odoo; then
+            echo "Odoo restarted successfully"
+          else
+            echo "Odoo failed to restart"
+            echo "=== systemctl status ==="
+            sudo systemctl status odoo --no-pager
+            echo "=== Last 50 lines of Odoo log ==="
+            sudo tail -n 50 /var/log/odoo/odoo.log
+            exit 1
+          fi
