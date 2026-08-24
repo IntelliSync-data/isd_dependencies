@@ -82,3 +82,6 @@ dmypy.json
 .DS_Store
 Thumbs.db
 desktop.ini
+
+.claude/
+.specify/
