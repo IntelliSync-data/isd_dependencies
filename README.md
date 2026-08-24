@@ -97,3 +97,13 @@ No addon is blocked on a missing sibling product. Live keys are optional after i
 | Reset | `make reset` |
 
 `.env` is gitignored. Commit only `.env.example`.
+
+## Governance
+
+Project rules live in [`.specify/memory/constitution.md`](.specify/memory/constitution.md) (v1.0.0).
+
+- Addons stay in their git submodules; workspace files are operator infrastructure only.
+- First run MUST work locally (Compose `web` + `db`) with no remote host.
+- Live payment, AI, PhotoApp, and S3 credentials are optional after install.
+- `.env` is local-only; commit `.env.example`.
+- Feature work follows Spec Kit: `/speckit-specify` → `/speckit-plan` → `/speckit-tasks` → `/speckit-implement`.
