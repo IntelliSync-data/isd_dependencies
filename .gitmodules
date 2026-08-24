@@ -1,0 +1,15 @@
+[submodule "isd_chatbot"]
+	path = addons/isd_chatbot
+	url = ../isd_chatbot.git
+[submodule "isd_profile_management"]
+	path = addons/isd_profile_management
+	url = ../isd_profile_management.git
+[submodule "isd_dashboard"]
+	path = addons/isd_dashboard
+	url = ../isd_dashboard.git
+[submodule "isd_payment"]
+	path = addons/isd_payment
+	url = ../isd_payment.git
+[submodule "isd_menu"]
+	path = addons/isd_menu
+	url = ../isd_menu.git
