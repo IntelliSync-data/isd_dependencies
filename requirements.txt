@@ -8,3 +8,6 @@ boto3>=1.34.0,<2.0.0
 
 # ISD API Builder dependencies
 paramiko>=3.0.0,<4.0.0
+
+# ISD AI Dashboard
+anthropic>=0.40.0
