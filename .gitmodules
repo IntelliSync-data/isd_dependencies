@@ -13,3 +13,12 @@
 [submodule "isd_menu"]
 	path = addons/isd_menu
 	url = ../isd_menu.git
+[submodule "isd_marketing"]
+	path = addons/isd_marketing
+	url = ../isd_marketing.git
+[submodule "openeducat"]
+	path = addons/openeducat
+	url = ../openeducat.git
+[submodule "isd_mcp_photoapp"]
+	path = addons/isd_mcp_photoapp
+	url = ../isd_mcp_photoapp.git
