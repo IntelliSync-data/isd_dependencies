@@ -1,0 +1,49 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-postgres}
+      POSTGRES_USER: ${POSTGRES_USER:-odoo}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-odoo}
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data/pgdata
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${HOST_PORT:-8069}:8069"
+    environment:
+      HOST: ${HOST:-db}
+      PORT: ${DB_PORT:-5432}
+      USER: ${DB_USER:-odoo}
+      PASSWORD: ${DB_PASSWORD:-odoo}
+      ODOO_DB: ${ODOO_DB:-isd}
+      ADMIN_PASSWD: ${ADMIN_PASSWD:-admin}
+    volumes:
+      - ./addons:/mnt/extra-addons
+      - odoo-web-data:/var/lib/odoo
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python3",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8069/web/login')",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 180s
+
+volumes:
+  odoo-web-data:
+  odoo-db-data:
